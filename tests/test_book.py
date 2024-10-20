@@ -65,8 +65,7 @@ def test_not_found(book, mocker):
 
 
 def test_get(book, mocker):
-    get_book = mocker.patch("livraria.books.crud.get_book")
-    get_book.return_value = book
+    mocker.patch("livraria.books.crud.get_book", return_value=book)
     response = client.get(f"{ENDPOINT}/1")
     assert response.status_code == HTTPStatus.OK
     assert response.json() == book
