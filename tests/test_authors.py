@@ -26,8 +26,7 @@ def authors(author):
 
 
 def test_create(author, mocker):
-    create_author = mocker.patch("livraria.authors.crud.create_author")
-    create_author.return_value = author
+    mocker.patch("livraria.authors.crud.create_author", return_value=author)
     response = client.post(
         ENDPOINT,
         json={"nome": "Author Test"},
@@ -37,31 +36,27 @@ def test_create(author, mocker):
 
 
 def test_list(authors, mocker):
-    get_authors = mocker.patch("livraria.authors.crud.get_authors")
-    get_authors.return_value = authors
+    mocker.patch("livraria.authors.crud.get_authors", return_value=authors)
     response = client.get(ENDPOINT)
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {"items": authors}
 
 
 def test_not_found(author, mocker):
-    get_author = mocker.patch("livraria.authors.crud.get_author")
-    get_author.return_value = None
+    mocker.patch("livraria.authors.crud.get_author", return_value=None)
     response = client.get(f"{ENDPOINT}/1")
     assert response.status_code == HTTPStatus.NOT_FOUND
 
 
 def test_get(author, mocker):
-    get_author = mocker.patch("livraria.authors.crud.get_author")
-    get_author.return_value = author
+    mocker.patch("livraria.authors.crud.get_author", return_value=author)
     response = client.get(f"{ENDPOINT}/1")
     assert response.status_code == HTTPStatus.OK
     assert response.json() == author
 
 
 def test_update(author, mocker):
-    update_author = mocker.patch("livraria.authors.crud.update_author")
-    update_author.return_value = author
+    mocker.patch("livraria.authors.crud.update_author", return_value=author)
     response = client.put(
         f"{ENDPOINT}/1",
         json={
@@ -72,7 +67,7 @@ def test_update(author, mocker):
     assert response.json() == author
 
 
-def test_delete(mocker):
-    mocker.patch("livraria.authors.crud.delete_author")
+def test_delete(author, mocker):
+    mocker.patch("livraria.authors.crud.delete_author", return_value=author)
     response = client.delete(f"{ENDPOINT}/1")
     assert response.status_code == HTTPStatus.OK

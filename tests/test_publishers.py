@@ -26,8 +26,7 @@ def publishers(publisher):
 
 
 def test_create(publisher, mocker):
-    create_publisher = mocker.patch("livraria.publishers.crud.create_publisher")
-    create_publisher.return_value = publisher
+    mocker.patch("livraria.publishers.crud.create_publisher", return_value=publisher)
     response = client.post(
         ENDPOINT,
         json={"nome": "Publisher Test"},
@@ -37,31 +36,27 @@ def test_create(publisher, mocker):
 
 
 def test_list(publishers, mocker):
-    get_publishers = mocker.patch("livraria.publishers.crud.get_publishers")
-    get_publishers.return_value = publishers
+    mocker.patch("livraria.publishers.crud.get_publishers", return_value=publishers)
     response = client.get(ENDPOINT)
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {"items": publishers}
 
 
-def test_not_found(publisher, mocker):
-    get_publisher = mocker.patch("livraria.publishers.crud.get_publisher")
-    get_publisher.return_value = None
+def test_not_found(mocker):
+    mocker.patch("livraria.publishers.crud.get_publisher", return_value=None)
     response = client.get(f"{ENDPOINT}/1")
     assert response.status_code == HTTPStatus.NOT_FOUND
 
 
 def test_get(publisher, mocker):
-    get_publisher = mocker.patch("livraria.publishers.crud.get_publisher")
-    get_publisher.return_value = publisher
+    mocker.patch("livraria.publishers.crud.get_publisher", return_value=publisher)
     response = client.get(f"{ENDPOINT}/1")
     assert response.status_code == HTTPStatus.OK
     assert response.json() == publisher
 
 
 def test_update(publisher, mocker):
-    update_publisher = mocker.patch("livraria.publishers.crud.update_publisher")
-    update_publisher.return_value = publisher
+    mocker.patch("livraria.publishers.crud.update_publisher", return_value=publisher)
     response = client.put(
         f"{ENDPOINT}/1",
         json={
@@ -72,7 +67,7 @@ def test_update(publisher, mocker):
     assert response.json() == publisher
 
 
-def test_delete(mocker):
-    mocker.patch("livraria.publishers.crud.delete_publisher")
+def test_delete(publisher, mocker):
+    mocker.patch("livraria.publishers.crud.delete_publisher", return_value=publisher)
     response = client.delete(f"{ENDPOINT}/1")
     assert response.status_code == HTTPStatus.OK

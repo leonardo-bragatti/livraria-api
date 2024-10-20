@@ -26,8 +26,7 @@ def categories(category):
 
 
 def test_create(category, mocker):
-    create_category = mocker.patch("livraria.categories.crud.create_category")
-    create_category.return_value = category
+    mocker.patch("livraria.categories.crud.create_category", return_value=category)
     response = client.post(
         ENDPOINT,
         json={"nome": "category Test"},
@@ -37,31 +36,27 @@ def test_create(category, mocker):
 
 
 def test_list(categories, mocker):
-    get_categories = mocker.patch("livraria.categories.crud.get_categories")
-    get_categories.return_value = categories
+    mocker.patch("livraria.categories.crud.get_categories", return_value=categories)
     response = client.get(ENDPOINT)
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {"items": categories}
 
 
 def test_not_found(category, mocker):
-    get_category = mocker.patch("livraria.categories.crud.get_category")
-    get_category.return_value = None
+    mocker.patch("livraria.categories.crud.get_category", return_value=None)
     response = client.get(f"{ENDPOINT}/1")
     assert response.status_code == HTTPStatus.NOT_FOUND
 
 
 def test_get(category, mocker):
-    get_category = mocker.patch("livraria.categories.crud.get_category")
-    get_category.return_value = category
+    mocker.patch("livraria.categories.crud.get_category", return_value=category)
     response = client.get(f"{ENDPOINT}/1")
     assert response.status_code == HTTPStatus.OK
     assert response.json() == category
 
 
 def test_update(category, mocker):
-    update_category = mocker.patch("livraria.categories.crud.update_category")
-    update_category.return_value = category
+    mocker.patch("livraria.categories.crud.update_category", return_value=category)
     response = client.put(
         f"{ENDPOINT}/1",
         json={
@@ -72,7 +67,7 @@ def test_update(category, mocker):
     assert response.json() == category
 
 
-def test_delete(mocker):
-    mocker.patch("livraria.categories.crud.delete_category")
+def test_delete(category, mocker):
+    mocker.patch("livraria.categories.crud.delete_category", return_value=category)
     response = client.delete(f"{ENDPOINT}/1")
     assert response.status_code == HTTPStatus.OK
